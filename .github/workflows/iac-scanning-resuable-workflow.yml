@@ -1,0 +1,32 @@
+name: iac-scanning-resuable-workflow
+run-name: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+on:
+  pull_request: # will trigger the workflow whenever PR is opened, synchronize, or reopened. for code scanning default setup PR check
+  workflow_call: # for codeql advanced scanning
+
+jobs:
+  action-trivy-iac-scanning:
+    runs-on: ubuntu-latest
+    permissions:      
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@18f2510ee396bbf400402947b394f2dd8c87dbb0 #0.29.0
+        with:
+          scan-type: 'config'
+          format: 'sarif'
+          output: ${{ github.event.repository.name }}-trivy-results.sarif
+          version: latest
+          exit-code: 1
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@9e8d0789d4a0fa9ceb6b1738f7e269594bdd67f0 #v3.28.9
+        with:
+          sarif_file: ${{ github.event.repository.name }}-trivy-results.sarif
