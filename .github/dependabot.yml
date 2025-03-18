@@ -16,7 +16,7 @@ updates:
             - "*"
 
   - package-ecosystem: "devcontainers" # See documentation for possible values
-    directory: "/.devcontainer/node_js/"
+    directory: "/.devcontainer/node.js/"
     schedule:
       interval: "daily"
     groups:
