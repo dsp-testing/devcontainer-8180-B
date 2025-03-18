@@ -7,7 +7,16 @@
 version: 2
 updates:  
   - package-ecosystem: "devcontainers" # See documentation for possible values
-    directory: "/"
+    directory: "/functions/"
+    schedule:
+      interval: "daily"
+    groups:
+       devcontainers-dependencies:
+          patterns:
+            - "*"
+
+  - package-ecosystem: "devcontainers" # See documentation for possible values
+    directory: "/node_js"
     schedule:
       interval: "daily"
     groups:
